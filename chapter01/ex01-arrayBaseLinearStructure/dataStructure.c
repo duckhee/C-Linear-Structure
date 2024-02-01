@@ -33,7 +33,7 @@ int main() {
     UserData *cur = NULL;
     cur = &userLists[0];
     while (cur != NULL) {
-        printf("%d, %s. %s.\r\n", cur->age, cur->name, cur->phone);
+        printf("[%p] %d, %s. %s. [next : %p]\r\n", cur, cur->age, cur->name, cur->phone, cur->pNext);
         cur = cur->pNext;
     }
 
