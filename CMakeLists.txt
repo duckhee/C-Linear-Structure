@@ -3,3 +3,4 @@ project(c_LinearStructure LANGUAGES C)
 
 
 add_subdirectory(chapter01)
+add_subdirectory(chapter02)
