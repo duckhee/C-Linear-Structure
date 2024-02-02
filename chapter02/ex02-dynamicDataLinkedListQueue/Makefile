@@ -1,12 +1,10 @@
 CC = gcc
 
-SRCS = dynamicDataLinkedList.c
+SRCS = main.c
 
 BUILD_DIR = buildDir
 
-TARGET = ex0201DynamicDataLinkedList
-
-CFLAGS := -g0
+TARGET = ex0202DynamicDataLinkedListQueue
 
 COBJS = $(addprefix $(BUILD_DIR)/, $(SRCS:.c=.o))
 
@@ -16,10 +14,10 @@ createdirs:
 	$(shell mkdir ${BUILD_DIR})
 
 build: $(COBJS)
-	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$(TARGET) $^
+	$(CC) -o $(BUILD_DIR)/$(TARGET) $^
 
 $(COBJS): $(BUILD_DIR)/%.o : %.c
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) -o $@ -c $<
 
 clean:
 	rm -rf ${BUILD_DIR}

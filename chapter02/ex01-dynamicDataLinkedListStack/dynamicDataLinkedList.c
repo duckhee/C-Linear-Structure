@@ -3,10 +3,6 @@
 //#include <string.h>
 #include <memory.h>
 
-typedef struct _linkedList {
-    struct _UserData *head;
-    int size;
-} LinkedList;
 
 typedef struct _UserData {
     int age;
