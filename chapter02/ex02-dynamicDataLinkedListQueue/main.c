@@ -71,7 +71,7 @@ void releaseAllNode(UserData *pNode) {
                pDeleteNode->pNext);
         free(pDeleteNode);
     }
-
+    g_pHeaderNode = NULL;
 }
 
 void initDumpyData() {
