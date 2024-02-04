@@ -104,8 +104,8 @@ void addNewNode(int age, const char *pName, const char *pPhone) {
     newNode->pNext = NULL;
     /** Dummy Header Node 로 인해서 이제 Header Node 값이 NULL 일 가능성이 제거 */
     /** Stack 구조로 넣을 경우 */
-//    newNode->pNext = &g_HeaderNode;
-//    g_HeaderNode = *newNode;
+//    newNode->pNext = g_HeaderNode.pNext;
+//    g_HeaderNode.pNext = newNode;
     /** Queue 구조로 넣을 경우 */
     /** Header Node 의 자료의 주소 값을 참조하도록 해준다. */
     UserData *pTail = &g_HeaderNode;
