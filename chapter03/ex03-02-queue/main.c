@@ -57,6 +57,8 @@ int main() {
 void initQueue() {
     g_headNode.pNext = &g_tailNode;
     g_tailNode.pPrev = &g_headNode;
+    /** 순환 참조로 만들기 위해서 g_tailNode 의 다음 node 를 g_headNode 를 참조하게 해준다.*/
+//    g_TailNode.pNext = &g_HeadNode;
 }
 
 void printQueue() {
