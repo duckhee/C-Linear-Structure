@@ -26,6 +26,9 @@ BUILD_DIR = buildDir
 
 TARGET = libuiLib.a
 
+#DYNAMIC_TARGET = libuiLib.so
+DYNAMIC_TARGET = libuiLib.dylib
+
 C_EXTRA += $(EXTRAINCDIRS)
 C_EXTRA += ../dataLib/inc
 
@@ -36,8 +39,9 @@ C_INC = $(patsubst %,-I%, $(C_EXTRA))
 
 COBJS = $(addprefix $(BUILD_DIR)/, $(SRCS:.c=.o))
 
+CFLAGS = -fPIC
 
-all: clean createdirs build
+all: clean createdirs build dynamicLib
 
 createdirs:
 	$(shell mkdir ${BUILD_DIR})
@@ -46,12 +50,14 @@ createdirs:
 build: $(COBJS)
 	$(AR) $(AR_FLAGS) $(BUILD_DIR)/$(TARGET) $^
 
+dynamicLib: $(COBJS))
+	$(CC) -shared -o $(BUILD_DIR)/$(DYNAMIC_TARGET) $^
 
 $(COBJS): $(BUILD_DIR)/%.o : %.c
-	$(CC) $(C_INC) -o $@ -c $<
+	$(CC) $(C_INC) $(CFLAGS) -o $@ -c $<
 
 clean:
 	rm -rf ${BUILD_DIR}
 
 .SUFFIXES: .c. o
-.PHONNY: clean createdirs build
+.PHONNY: clean createdirs build dynamicLib
