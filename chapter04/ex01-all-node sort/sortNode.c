@@ -209,7 +209,7 @@ void swapNode(UserData *pLeft, UserData *pRight) {
     nodeDataCopy(pRight, &temp);
 }
 
-/** name 기준으로 정령 */
+/** name 기준으로 정렬 -> 선택 정렬 사용 */
 void sortNodeByName() {
     if (isEmpty()) {
         return;
