@@ -63,6 +63,7 @@ void addNewNode(int age, const char *pName, const char *pPhone) {
 
     /** 데이터 넣어주기 */
     pNewNode->pData = pNewData;
+    /** header 파일에 정의가 되어 있으면 해당 함수를 넣어준다. -> 구현이 안되어 있으면 오류가 나므로 weak 로 함수를 만들어서 추후 overrinding 하여 함수를 넣는 형태로 현재는 구현이 되어 있다. */
     pNewNode->GetKey = getKey;
     /** node 의 관계에 대한 설정 */
     MyNode *pPrevNode = g_TailNode.pPrev;
