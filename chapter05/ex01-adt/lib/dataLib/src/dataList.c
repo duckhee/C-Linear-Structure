@@ -90,6 +90,7 @@ void sortByKey() {
     MyNode *pTemp = g_HeaderNode.pNext;
     MyNode *pSelectedNode = NULL;
     MyNode *pComparedNode = NULL;
+    /** 선택 정렬을 이용한 정렬 */
     /** 비교를 위한 반복문 */
     while (pTemp != NULL && pTemp != &g_TailNode.pPrev) {
         pSelectedNode = pTemp;

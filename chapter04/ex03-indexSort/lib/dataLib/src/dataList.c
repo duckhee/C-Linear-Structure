@@ -202,6 +202,10 @@ void **searchByAgeRange(int min, int max, int *pCount) {
         }
         pTemp = pTemp->pNext;
     }
+    if (pMin > pTemp->age) {
+        *pCount = 0;
+        return NULL;
+    }
     /** 최소 값과 최대 값이 있을 경우 */
     if (pMin != NULL && pMax != NULL) {
         UserData *pTmp = pMin;
@@ -256,9 +260,9 @@ void **makeIndexAge(int *pCount) {
     for (int i = 0; i < nodeTotalLength - 1; ++i) {
         for (int j = i + 1; j < nodeTotalLength; ++j) {
             if (indexList[i]->age > indexList[j]->age) {
-                UserData *pTemp = indexList[i];
+                UserData *pSwapTemp = indexList[i];
                 indexList[i] = indexList[j];
-                indexList[j] = pTemp;
+                indexList[j] = pSwapTemp;
             }
         }
     }
