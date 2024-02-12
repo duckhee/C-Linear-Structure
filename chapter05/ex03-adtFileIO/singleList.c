@@ -94,6 +94,8 @@ void addNewNode(const char *pKey, const void *pData, int sizeOfData, bool isNew,
     g_TailNode.pPrev = pNewNode;
     /** 데이터의 갯수를 관리하는 static 변수의 값 증가 */
     ++g_listCount;
+    /** 새로 생성된 데이터를 파일에 쓰기 */
+    saveNodeToFile(pNewNode);
 }
 
 /** 관리 구조체에 정의된 key 값을 가지고 검색하는 함수 */
