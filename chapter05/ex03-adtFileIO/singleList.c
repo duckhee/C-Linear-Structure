@@ -153,8 +153,10 @@ int removeNode(Node *pRemoveNode) {
         return 0;
     }
     fseek(fp, (pRemoveNode->offset * sizeof(UserData)), SEEK_SET);
-
-    if (fwrite(NULL, sizeof(UserData), 1, fp) > 0) {
+    UserData tempUser = {'\0'};
+    /** 삭제된 데이터인지 알기 위해서 해당 값을 초기화 */
+    memset(tempUser.name, '\0', sizeof(NAME_MAX));
+    if (fwrite(&tempUser, sizeof(UserData), 1, fp) > 0) {
         free(pRemoveNode);
         fclose(fp);
         --g_listCount;
@@ -178,10 +180,16 @@ int loadListFromFile(void) {
     /** 파일에 저장된 데이터의 위치 값을 저장하기 위한 변수 */
     unsigned int offset = 0;
     while (fread(&pTempUser, sizeof(UserData), 1, fp) > 0) {
-        /** key 를 이름으로 설정 */
-        addNewNode(pTempUser.name, NULL, 0, false, offset);
-        memset(&pTempUser, '\0', sizeof(UserData));
-        ++offset;
+        printf("get user - %s\r\n", pTempUser.name);
+        if (strlen(pTempUser.name) <= 0) {
+            printf("this user empty place\r\n");
+        } else {
+            /** key 를 이름으로 설정 */
+            addNewNode(pTempUser.name, NULL, 0, false, offset);
+            memset(&pTempUser, '\0', sizeof(UserData));
+            ++offset;
+        }
+
     }
     fclose(fp);
     return 1;
