@@ -37,6 +37,8 @@ void releaseList();
 
 void addNewNode(const char *pKey, const void *pData, int sizeOfData, bool isNew, unsigned int offset);
 
+int removeNode(Node *pRemoveNode);
+
 void *searchByKey(char *pszKey);
 
 void sortByAge(void);

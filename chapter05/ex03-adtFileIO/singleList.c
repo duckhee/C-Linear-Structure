@@ -9,11 +9,14 @@ static unsigned int g_listCount = 0;
 
 bool isEmpty();
 
+int newNodeCommitToFile(Node *pNode);
+
 void init() {
     g_HeaderNode.pNext = &g_TailNode;
     g_TailNode.pPrev = &g_HeaderNode;
     g_listCount = 0;
 }
+
 
 int dataCount() {
     return g_listCount;
@@ -94,8 +97,6 @@ void addNewNode(const char *pKey, const void *pData, int sizeOfData, bool isNew,
     g_TailNode.pPrev = pNewNode;
     /** 데이터의 갯수를 관리하는 static 변수의 값 증가 */
     ++g_listCount;
-    /** 새로 생성된 데이터를 파일에 쓰기 */
-    saveNodeToFile(pNewNode);
 }
 
 /** 관리 구조체에 정의된 key 값을 가지고 검색하는 함수 */
@@ -135,6 +136,32 @@ void *searchByKey(char *pszKey) {
     return NULL;
 }
 
+int removeNode(Node *pRemoveNode) {
+    FILE *fp = NULL;
+    Node *pPrevNode = pRemoveNode->pPrev;
+    Node *pNextNode = pRemoveNode->pNext;
+
+    pPrevNode->pNext = pNextNode;
+    pNextNode->pPrev = pPrevNode;
+    UserData *pDeleteUser = pRemoveNode->pDataCache;
+    if (pDeleteUser != NULL) {
+        printf("[%p] %d, %s, %s \r\n", pRemoveNode, pDeleteUser->age, pDeleteUser->name, pDeleteUser->phone);
+        free(pDeleteUser);
+    }
+    fp = fopen(SAVE_FILE_NAME, "rb+");
+    if (fp == NULL) {
+        return 0;
+    }
+    fseek(fp, (pRemoveNode->offset * sizeof(UserData)), SEEK_SET);
+
+    if (fwrite(NULL, sizeof(UserData), 1, fp) > 0) {
+        free(pRemoveNode);
+        fclose(fp);
+        --g_listCount;
+        return 1;
+    }
+    return 0;
+}
 
 int loadListFromFile(void) {
     /** 데이터를 읽어오기 전에 올라온 데이터 삭제 */
@@ -175,6 +202,7 @@ int saveNewNodeToFile(void) {
             /** file 에 데이터 쓰기 */
             fwrite(pTempNode->pDataCache, pTempNode->dataSize, 1, fp);
             printf("file write : %s\r\n", pTempNode->pszKey);
+            pTempNode->isNew = false;
         }
         pTempNode = pTempNode->pNext;
     }
@@ -182,10 +210,27 @@ int saveNewNodeToFile(void) {
     return 1;
 }
 
+int newNodeCommitToFile(Node *pNode) {
+    FILE *fp = NULL;
+    fp = fopen(SAVE_FILE_NAME, "ab");
+    if (fp == NULL) {
+        return 0;
+    }
+    fseek(fp, sizeof(UserData), SEEK_END);
+    if (fwrite(pNode->pDataCache, sizeof(UserData), 1, fp) > 0) {
+        printf("Commit new data\r\n");
+        fclose(fp);
+        return 1;
+    }
+    return 0;
+}
+
+
 /** 특정 node 에 대한 변경 값을 파일에 쓰는 함수 */
 int saveNodeToFile(Node *pNode) {
     /** file 을 읽어올 변수 */
     FILE *fp = NULL;
+    int offset;
     if (pNode->pDataCache == NULL || pNode->dataSize == 0) {
         return 0;
     }
@@ -195,7 +240,7 @@ int saveNodeToFile(Node *pNode) {
         return 0;
     }
     /** 해당 자료형의 위치 찾기 */
-    fseek(fp, (pNode->offset * sizeof(UserData)), SEEK_SET);
+    fseek(fp, offset, SEEK_SET);
 
     if (fwrite(pNode->pDataCache, sizeof(UserData), 1, fp) > 0) {
         fclose(fp);

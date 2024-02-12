@@ -2,6 +2,8 @@
 
 void addNewUser();
 
+void deleteUser();
+
 void searchByKeyUser();
 
 void editUserData(Node *pSelectedNode);
@@ -37,6 +39,8 @@ void menuHandler(void) {
                 break;
 
             case REMOVE:
+                deleteUser();
+                getchar();
                 break;
 
             default:
@@ -92,6 +96,7 @@ void addNewUser() {
     scanf("%s", user.phone);
     printf("%d, %s, %s \r\n", user.age, user.name, user.phone);
     addNewNode(user.name, &user, sizeof(user), true, 0);
+    saveNewNodeToFile();
 }
 
 void editUserData(Node *pSelectedNode) {
@@ -101,7 +106,7 @@ void editUserData(Node *pSelectedNode) {
     printf("New User Phone : ");
     scanf("%s%*c", szBuffer);
 //    fgets(szBuffer, PHONE_MAX, stdin);
-    
+
     printf("Update Phone : %s\r\n", szBuffer);
     if (strlen(szBuffer) > 0) {
         memcpy(pTempUser->phone, szBuffer, sizeof(pTempUser->phone));
@@ -131,5 +136,19 @@ void searchByKeyUser() {
             }
         }
     }
+    getchar();
+}
+
+void deleteUser() {
+    char deleteUserKey[NAME_MAX] = {0};
+    printf("Delete User Key : ");
+    scanf("%s%*c", deleteUserKey);
+    printf("Delete user name is %s\r\n", deleteUserKey);
+    Node *pDeleteNodeSearch = searchByKey(deleteUserKey);
+    if (pDeleteNodeSearch == NULL) {
+        printf("Not Found Delete User\r\n");
+        return;
+    }
+    removeNode(pDeleteNodeSearch);
     getchar();
 }
