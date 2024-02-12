@@ -77,6 +77,40 @@ void addNewNode(int age, const char *pName, const char *pPhone) {
     ++g_listCount;
 }
 
+void removeNodeByName(MyNode *pRemoveNode) {
+    /** 삭제할 이전 노드와 삭제할 노드의 이후 노드를 연결 시켜주는 작업이 필요 */
+    MyNode *pPrev = pRemoveNode->pPrev;
+    MyNode *pNext = pRemoveNode->pNext;
+
+    pPrev->pNext = pNext;
+    pNext->pPrev = pPrev;
+    MyNode *pDeleteNode = pRemoveNode;
+    UserData *pTempUser = pDeleteNode->pData;
+    printf("Remove Node - [%p] %d, %s, %s, [prev - %p][next -%p]\r\n", pRemoveNode, pTempUser->age, pTempUser->name,
+           pTempUser->phone, pPrev,
+           pNext);
+    free(pDeleteNode->pData);
+    free(pDeleteNode);
+
+    --g_listCount;
+}
+
+MyNode *searchNodeByName(const char *pName) {
+    if (isEmpty()) {
+        return NULL;
+    }
+    MyNode *pTemp = g_HeaderNode.pNext;
+    UserData *pTempUser = NULL;
+    while (pTemp != NULL && pTemp != &g_TailNode) {
+        pTempUser = pTemp->pData;
+        if (strcmp(pTempUser->name, pName) == 0) {
+            return pTemp;
+        }
+        pTemp = pTemp->pNext;
+    }
+    return NULL;
+}
+
 void swapNode(MyNode *pLeft, MyNode *pRight) {
     void *pTemp = pRight->pData;
     pRight->pData = pLeft->pData;
@@ -109,4 +143,50 @@ void sortByKey() {
         pSelectedNode = NULL;
         pTemp = pTemp->pNext;
     }
+}
+
+int savedListToFile(void) {
+    /** binary write mode 로 파일 열기 */
+    FILE *fp = fopen("listData.dat", "wb");
+    /** file 열기 실패 */
+    if (fp == NULL) {
+        printf("file open Failed\r\n");
+        return 0;
+    }
+    /** data 가 있는 부분 */
+    MyNode *pTemp = g_HeaderNode.pNext;
+    /** void pointer 를 UserData 로 변환 후 담을 변수 */
+    UserData *pTempUser = NULL;
+    while (pTemp != NULL && pTemp != &g_TailNode) {
+        /** UserData 형태로 형 변환 -> 자료형 재 정의 */
+        pTempUser = pTemp->pData;
+        /** file 에 데이터 쓰기 */
+        fwrite(pTempUser, sizeof(UserData), 1, fp);
+        pTemp = pTemp->pNext;
+    }
+    /** file 다 쓰고 나서 file 닫아 주기 */
+    fclose(fp);
+    return 1;
+}
+
+int loadListFromFile(void) {
+
+    /** binary read mode 로 파일 열기 */
+    FILE *fp = fopen("listData.dat", "rb");
+    if (fp == NULL) {
+        printf("file open Failed\r\n");
+        return 0;
+    }
+    /** file data 를 읽어오기 전에 리스트 초기화 */
+    releaseList();
+    /** 읽어온 데이터를 임시 저장할 객체 */
+    UserData loadUser = {0};
+    /** file 에서 데이터를 UserData 형태로 가져오기 */
+    while (fread(&loadUser, sizeof(UserData), 1, fp) > 0) {
+        addNewNode(loadUser.age, loadUser.name, loadUser.phone);
+        memset(&loadUser, '\0', sizeof(UserData));
+    }
+    /** file 에서 데이터를 다 읽어온 후 file 닫기 */
+    fclose(fp);
+    return 1;
 }

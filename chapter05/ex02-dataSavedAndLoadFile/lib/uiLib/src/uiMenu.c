@@ -1,13 +1,16 @@
 
 #include "uiMenu.h"
 
+void addNew(bool waitFlag);
+
+void removeByName(bool waitFlag);
 
 void searchByAge();
 
 Menu printMenu(void) {
     Menu inputMenuSelect = EXIT;
     clear();
-    printf("[1]New\t[2]Search\t[3]Search age\t[4]Print\t[4]Remove\t[0]Exit\r\n");
+    printf("[1]New\t[2]Search\t[3]Search age\t[4]Print\t[5]Remove\t[0]Exit\r\n");
     scanf("%d%*c", &inputMenuSelect);
     return inputMenuSelect;
 }
@@ -19,6 +22,7 @@ void menuHandler(void) {
         switch (selectMenu) {
             case NEW:
                 puts("new node add");
+                addNew(true);
                 getchar();
                 break;
             case SEARCH:
@@ -33,10 +37,12 @@ void menuHandler(void) {
             case PRINT:
                 puts("print node");
                 printNode(false);
+                savedListToFile();
                 getchar();
                 break;
             case REMOVE:
                 puts("remove node");
+                removeByName(true);
                 getchar();
                 break;
             default:
@@ -72,6 +78,42 @@ void printNodeReverse(bool waitFlag) {
                pTemp->pNext);
         pTemp = pTemp->pPrev;
     }
+    if (waitFlag) {
+        getchar();
+    }
+}
+
+
+void addNew(bool waitFlag) {
+    int age = 0;
+    char name[32] = {0};
+    char phone[32] = {0};
+    printf("age : ");
+    scanf("%d", &age);
+    printf("name : ");
+    scanf("%s", &name);
+    printf("phone : ");
+    scanf("%s", &phone);
+    addNewNode(age, name, phone);
+    if (waitFlag) {
+        getchar();
+    }
+}
+
+void removeByName(bool waitFlag) {
+    char name[32] = {0};
+    printf("delete name : ");
+    scanf("%s", &name);
+    printf("Find name [%s] start\r\n", name);
+    MyNode *searchNode = searchNodeByName(name);
+    if (searchNode == NULL) {
+        printf("find name failed not have %s\r\n", name);
+        if (waitFlag) {
+            getchar();
+        }
+        return;
+    }
+    removeNodeByName(searchNode);
     if (waitFlag) {
         getchar();
     }

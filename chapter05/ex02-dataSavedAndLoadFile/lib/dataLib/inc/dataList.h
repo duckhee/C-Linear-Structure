@@ -29,16 +29,25 @@ void releaseList(void);
 
 void addNewNode(int age, const char *name, const char *phone);
 
+void removeNodeByName(MyNode *pRemoveNode);
+
 void swapNode(MyNode *pLeft, MyNode *pRight);
 
 /** 값을 검색할 때 사용자가 변경할 수 있게 해주기 위한 call back 함수 */
 char *getKey(void *thisPointer);
+
+/** search by name */
+MyNode *searchNodeByName(const char *pName);
 
 bool isEmpty();
 
 void sortByKey();
 
 unsigned int getListCount();
+
+int savedListToFile(void);
+
+int loadListFromFile(void);
 
 MyNode g_HeaderNode;
 MyNode g_TailNode;
