@@ -50,7 +50,7 @@ createdirs:
 build: $(COBJS)
 	$(AR) $(AR_FLAGS) $(BUILD_DIR)/$(TARGET) $^
 
-dynamicLib: $(COBJS))
+dynamicLib: $(COBJS)
 	$(CC) -shared -o $(BUILD_DIR)/$(DYNAMIC_TARGET) $^
 
 $(COBJS): $(BUILD_DIR)/%.o : %.c
